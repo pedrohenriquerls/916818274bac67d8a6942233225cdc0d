@@ -1,6 +1,8 @@
 package src.tiles;
 import h2d.TileGroup;
 import h2d.Tile;
+import h2d.Scene;
+import src.Layers;
 
 enum DungeonTile {
     FloorCommon;
@@ -26,6 +28,7 @@ enum DungeonTile {
 class Dungeon {
     static inline var TILE_SIZE = 16;
     static inline var SCALE_SIZE = 2;
+
     var tiles: Tile;
     var map: Map<DungeonTile, Tile>;
 
@@ -67,8 +70,9 @@ class Dungeon {
         return TILE_SIZE * SCALE_SIZE;
     }
 
-    public function renderTileMap(tileMap: Array<Array<DungeonTile>>): TileGroup {
-        var group = new TileGroup(tiles);
+    public function renderTileMap(tileMap: Array<Array<DungeonTile>>, scene: Scene) {
+        var floorGroup = new TileGroup(tiles);
+        var wallGroup = new TileGroup(tiles);
         var realIndex = 0.0;
         for (index in 0...tileMap.length) {
             var listTileKey = tileMap[index];
@@ -81,17 +85,17 @@ class Dungeon {
             for (tileKeyIndex in 0...listTileKey.length) {
                 var positionX = tileKeyIndex * scaledSize();
                 if (topWall) {
-                    group.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallTopLeft]);
+                    wallGroup.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallTopLeft]);
                     realIndex += 1;
-                    group.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallLeft]);
+                    wallGroup.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallLeft]);
                     realIndex += 1;
                 }
 
                 if (bottomWall) {
-                    realIndex += 0.2;
-                    group.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallTopLeft]);
+                    // realIndex += 1;
+                    wallGroup.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallTopLeft]);
                     realIndex += 1;
-                    group.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallLeft]);
+                    wallGroup.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallLeft]);
                 }
 
                 realIndex = currentIndex;
@@ -114,10 +118,12 @@ class Dungeon {
                 }
 
                 var tile = map[tileKey];
-                group.add(tileKeyIndex * scaledSize(), realIndex * scaledSize(), tile);
+                floorGroup.add(tileKeyIndex * scaledSize(), realIndex * scaledSize(), tile);
             }
             realIndex += 1;
         }
-        return group;
+
+        scene.addChildAt(floorGroup, Layers.Floor.getIndex());
+        scene.addChildAt(wallGroup, Layers.Wall.getIndex());
     }
 }

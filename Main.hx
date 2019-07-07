@@ -1,7 +1,9 @@
 import src.tiles.Dungeon;
+import src.Layers;
 
 class Main extends hxd.App {
     var anim:h2d.Anim;
+    var layers: h2d.Layers;
 
     override function init() {
         // var tf = new h2d.Text(hxd.res.DefaultFont.get(), s2d);
@@ -16,11 +18,11 @@ class Main extends hxd.App {
         ], 8, s2d);
         anim.loop = true;
         anim.x = 0;
-        s2d.addChild(anim);
+        s2d.addChildAt(anim, Layers.Chars.getIndex());
         // s2d.addChild(group);
 
         var dungeon = new Dungeon();
-        s2d.addChild(dungeon.renderTileMap([
+        dungeon.renderTileMap([
             [DungeonTile.FloorCommon, DungeonTile.FloorCommon, DungeonTile.FloorCommon],
             [DungeonTile.FloorCommon, DungeonTile.FloorCommon, DungeonTile.FloorCommon],
             [DungeonTile.FloorCommon, DungeonTile.FloorCommon, DungeonTile.FloorCommon],
@@ -28,7 +30,7 @@ class Main extends hxd.App {
             [DungeonTile.FloorCommon, DungeonTile.FloorCommon, DungeonTile.FloorCommon],
             [DungeonTile.FloorCommon, null, DungeonTile.FloorCommon],
             [DungeonTile.FloorCommon, DungeonTile.FloorCommon, DungeonTile.FloorCommon]
-        ]));
+        ], s2d);
 		//parts = new h2d.SpriteBatch(ptiles[0]);
     }
 
