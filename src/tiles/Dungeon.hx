@@ -20,6 +20,12 @@ enum DungeonTile {
     WallTopRight;
     WallLeft;
     WallMid;
+    WallSideTopLeft;
+    WallSideMidLeft;
+    WallSideFrontLeft;
+    WallSideTopRight;
+    WallSideMidRight;
+    WallSideFrontRight;
     WallRight;
     WallHole1;
     WallHole2;
@@ -58,6 +64,14 @@ class Dungeon {
         map[DungeonTile.WallRight] = tiles.sub(48, 16, TILE_SIZE, TILE_SIZE);
         map[DungeonTile.WallHole1] = tiles.sub(48, 32, TILE_SIZE, TILE_SIZE);
         map[DungeonTile.WallHole2] = tiles.sub(48, 48, TILE_SIZE, TILE_SIZE);
+
+        map[DungeonTile.WallSideTopLeft] = tiles.sub(0, 112, TILE_SIZE, TILE_SIZE);
+        map[DungeonTile.WallSideMidLeft] = tiles.sub(0, 128, TILE_SIZE, TILE_SIZE);
+        map[DungeonTile.WallSideFrontLeft] = tiles.sub(0, 144, TILE_SIZE, TILE_SIZE);
+
+        map[DungeonTile.WallSideTopRight] = tiles.sub(16, 112, TILE_SIZE, TILE_SIZE);
+        map[DungeonTile.WallSideMidRight] = tiles.sub(16, 128, TILE_SIZE, TILE_SIZE);
+        map[DungeonTile.WallSideFrontRight] = tiles.sub(16, 144, TILE_SIZE, TILE_SIZE);
     }
 
     function scaleTiles() {
@@ -89,6 +103,7 @@ class Dungeon {
                     realIndex += 1;
                     wallGroup.add(positionX, realIndex * scaledSize(), map[DungeonTile.WallLeft]);
                     realIndex += 1;
+                    wallGroup.add(0, realIndex * scaledSize(), map[DungeonTile.WallSideTopRight]);
                 }
 
                 if (bottomWall) {
@@ -110,7 +125,11 @@ class Dungeon {
             }
 
             for (tileKeyIndex in 0...listTileKey.length) {
-                var positionX = tileKeyIndex * scaledSize();
+                var positionY = realIndex * scaledSize();
+
+                if (tileKeyIndex == 0) {
+                    wallGroup.add(0, positionY, map[DungeonTile.WallSideMidRight]);
+                }
 
                 var tileKey = listTileKey[tileKeyIndex];
                 if (tileKey == null) {
@@ -118,7 +137,7 @@ class Dungeon {
                 }
 
                 var tile = map[tileKey];
-                floorGroup.add(tileKeyIndex * scaledSize(), realIndex * scaledSize(), tile);
+                floorGroup.add(tileKeyIndex * scaledSize(), positionY, tile);
             }
             realIndex += 1;
         }
